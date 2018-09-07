@@ -1,0 +1,10 @@
+package: github.com/thuandoan274/auto-swagger
+import:
+- package: github.com/gin-gonic/gin
+  version: v1.3.0
+- package: github.com/swaggo/gin-swagger
+  version: v1.0.0
+  subpackages:
+  - swaggerFiles
+- package: github.com/swaggo/swag
+  version: v1.3.2

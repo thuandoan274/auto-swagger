@@ -1,0 +1,1653 @@
+openapi: 3.0.0
+# Added by API Auto Mocking Plugin
+servers:
+  - url: https://dev-v3-api.zody.vn
+    description: Dev
+  - url: https://v3-api.zody.vn
+    description: Prod
+info:
+  description: |
+    Golang server
+    
+    Create checksum
+    
+    ```
+    Secret: zody-dev-checksum-secret
+    // JS code
+    const checksumString = param1 + param2 + secret
+    return crypto.createHash('sha1').update(checksumString).digest('hex')
+    ```
+  version: "1.0.0"
+  title: Zody-V3 API - Golang
+  contact:
+    email: namhq.1989@gmail.com
+
+# List tags
+tags:
+  - name: Common
+    description: Common apis
+  - name: Notification
+    description: Notification apis
+  - name: Home
+    description: Home apis
+  - name: Review
+    description: Review apis
+  - name: Comment
+    description: Comment apis
+  - name: Business
+    description: Business apis
+  - name: Tip
+    description: Tip apis
+  - name: Me
+    description: Me apis
+  - name: User
+    description: User apis
+
+# List components
+components:
+  parameters:
+    authorization:
+      in: header
+      name: Authorization
+      description: "Authorization: Bearer {token}"
+      schema:
+        type: string
+      required: true
+    page:
+      in: query
+      name: page
+      description: Page indicate for pagination
+      schema:
+        type: integer
+        minimum: 0
+        default: 0
+      required: false
+    timestamp:
+      in: query
+      name: timestamp
+      description: Timestamp indicate for pagination
+      schema:
+        type: string
+        format: date
+      required: false
+    pageToken:
+      in: query
+      name: pageToken
+      description: Next page token indicate for pagination
+      schema:
+        type: string
+      required: false
+    latitude:
+      in: query
+      name: latitude
+      description: Latitude
+      schema:
+        type: number
+        format: float
+    longitude:
+      in: query
+      name: longitude
+      description: Longitude
+      schema:
+        type: number
+        format: float
+  schemas:
+    businessSearch:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        address:
+          type: string
+        desc:
+          type: string
+        cover:
+          type: string
+        categories:
+          type: array
+          items:
+            type: object
+            properties:
+              _id:
+                type: string
+              name:
+                type: string
+        distance:
+          type: number
+          format: float
+        location:
+          type: object
+          properties:
+            lat:
+              type: number
+            lng:
+              type: number 
+        rating:
+          type: integer
+        verified:
+          type: boolean
+    businessBrief:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        address:
+          type: string
+        cover:
+          type: string
+          format: uri
+    referral:
+      type: object
+      properties:
+        code:
+          type: string
+        canEdit:
+          type: boolean
+        shareText:
+          type: string
+        downloadURL:
+          type: string
+    userMe:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        avatar:
+          type: string
+        gender:
+          type: string
+        phone:
+          type: string
+        birthday:
+          type: string
+        city:
+          type: string
+        referral:
+          $ref: '#/components/schemas/referral'
+        statistic:
+          type: object
+          properties: 
+            followers:
+              type: integer
+            followings:
+              type: integer
+            reviews:
+              type: integer
+            coin:
+              type: integer
+            expense:
+              type: integer
+            reward:
+              type: integer
+        isLocalExpert:
+          type: boolean
+    userBrief:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        avatar:
+          type: string
+        statistic:
+          type: object
+          properties: 
+            followers:
+              type: integer
+            reviews:
+              type: integer
+            coin:
+              type: integer
+        isFollowed:
+          type: boolean
+        isLocalExpert:
+          type: boolean
+    userBriefWithReview:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        avatar:
+          type: string
+        statistic:
+          type: object
+          properties: 
+            followers:
+              type: integer
+            reviews:
+              type: integer
+        isFollowed:
+          type: boolean
+        isLocalExpert:
+          type: boolean
+        lastReview:
+          $ref: '#/components/schemas/review'
+    userProfileView:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        avatar:
+          type: string
+        statistic:
+          type: object
+          properties: 
+            followings:
+              type: integer
+            followers:
+              type: integer
+            reviews:
+              type: integer
+        isFollowed:
+          type: boolean
+        isLocalExpert:
+          type: boolean
+    review:
+      type: object
+      properties:
+        _id:
+          type: string
+        user:
+          $ref: '#/components/schemas/userBrief'
+        business:
+          $ref: '#/components/schemas/businessBrief'
+        createdAt:
+          type: string
+          format: date-time
+        statistic:
+          type: object
+          properties:
+            comments:
+              type: integer
+            shares:
+              type: integer
+            views:
+              type: integer
+            tipped:
+              type: integer
+        feedback:
+          type: string
+        point:
+          type: integer
+        photos:
+          $ref: '#/components/schemas/photos'
+        currentUserTipped:
+          type: integer
+        isAuthor:
+          type: boolean
+        shareURL:
+          type: string
+    comment:
+      type: object
+      properties:
+        _id:
+          type: string
+        user:
+          $ref: '#/components/schemas/userBrief'
+        createdAt:
+          type: string
+          format: date-time
+        isAuthor:
+          type: boolean
+        content:
+          type: string
+        statistic:
+          type: object
+          properties:
+            likes:
+              type: integer
+        photos:
+          $ref: '#/components/schemas/photos'
+    photos:
+      type: array
+      items:
+        type: object
+        properties:
+          _id:
+            type: string
+          url:
+            type: string
+          width:
+            type: integer
+          height:
+            type: integer
+    city:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        location:
+          type: object
+          properties:
+            latitude:
+              type: number
+            longitude:
+              type: number
+
+paths:
+  /loginFacebook:
+    post:
+      tags:
+        - Common
+      summary: Login with Facebook
+      deprecated: true
+      description:  |
+        Login with Facebook
+        ***
+        ```
+        {
+          token: string // Token from Facebook authentication
+        }
+        ```
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - token
+              properties:
+                token:
+                  type: string
+      responses:
+        200:
+          description: Return app token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+        400:
+          description: bad input parameter
+        401:
+          description: token expired/invalid
+          
+  /loginPhoneNumber:
+    post:
+      tags:
+        - Common
+      summary: Login with phone number
+      deprecated: true
+      description:  |
+        Login with phone number
+        ***
+        ```
+        {
+          phone: User phone number // Regex: /^\+?1?(\d{10,12}$)/
+        }
+        ```
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - phone
+              properties:
+                phone:
+                  type: string
+              example:
+                phone: 0901234567 | +84901234567 | 84901234567
+      responses:
+        200:
+          description: |
+            Production: No response data  
+            Other envs: Return code to confirm login
+            ***
+            {
+              code: "123456"
+            }
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+        400:
+          description: bad input parameter
+        401:
+          description: token expired/invalid
+    
+    put:
+      tags:
+        - Common
+      summary: Confirm login with phone number
+      deprecated: true
+      description:  |
+        Confirm login with phone number
+        ***
+        ```
+        {
+          phone: User phone number // Regex: /^\+?1?(\d{10,12}$)/
+          code: Confirm code // 6 characters
+        }
+        ```
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - phone
+                - code
+              properties:
+                phone:
+                  type: string
+                code:
+                  type: string
+              example:
+                phone: 0901234567 | +84901234567 | 84901234567
+                code: "123456"
+      responses:
+        200:
+          description: Return app token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+        400:
+          description: bad input parameter
+        401:
+          description: token expired/invalid
+          
+  /appData:
+    get:
+      tags:
+        - Common
+      summary: Get app init data
+      parameters:
+      - $ref: '#/components/parameters/authorization'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  photo:
+                    type: object
+                    properties:
+                      maxSize:
+                        type: number
+                  review:
+                    type: object
+                    properties:
+                      minViewToDisplay:
+                        type: number
+                      timeToIncreaseView:
+                        type: number
+                  tip:
+                    type: object
+                    properties:
+                      minCoinToTip:
+                        type: number
+                      delayTime:
+                        type: number
+                  cities:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/city'
+                  filterCities:
+                    type: array
+                    items:
+                      type: string
+        400:
+          description: bad input parameter
+        401:
+          description: token expired/invalid
+
+  /notifications:
+    get:
+      tags:
+        - Notification
+      summary: Get list notifications
+      description:  |
+        Get user list notifications
+      parameters:
+      - $ref: '#/components/parameters/authorization'
+      - $ref: '#/components/parameters/pageToken'
+      responses:
+        200:
+          description: List notifications of current user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  notifications:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        _id:
+                          type: string
+                        type:
+                          type: string
+                        user:
+                          type: object
+                          properties:
+                            _id:
+                              type: string
+                            name:
+                              type: string
+                            avatar:
+                              type: string
+                        timestamp:
+                          type: string
+                          format: date-time
+                        text:
+                          type: string
+                        targetId:
+                          type: string
+                        targetType:
+                          type: string
+                        isRead:
+                          type: boolean
+        400:
+          description: bad input parameter
+        401:
+          description: token expired/invalid
+    
+    put:
+      tags:
+        - Notification
+      summary: Read all
+      parameters:
+      - $ref: '#/components/parameters/authorization'
+      responses:
+        200:
+          description: OK
+        400:
+          description: bad input parameter
+        401:
+          description: token expired/invalid
+  
+  /notifications/{notificationId}:
+    patch:
+      tags:
+        - Notification
+      summary: Read
+      parameters:
+      - $ref: '#/components/parameters/authorization'
+      - in: path
+        name: notificationId
+        description: Id of notification
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: OK
+        400:
+          description: bad input parameter
+        401:
+          description: token expired/invalid
+          
+  /leaderboard:
+    get:
+      tags:
+        - Common
+      summary: App leaderboard
+      deprecated: false
+      description:  |
+        Get app leaderboard data  
+        Limit 30 records per type  
+        Calculate current user rank in max range 999
+      parameters:
+      - $ref: '#/components/parameters/authorization'
+      - in: query
+        name: type
+        description: Type of leaderboard
+        schema:
+          type: string
+          enum: ["views", "coins", "tips"]
+      - in: query
+        name: time
+        description: Filter by time
+        schema:
+          type: string
+          enum: ["all", "week", "month"]
+      responses:
+        200:
+          description: Top users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    users:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          user:
+                            type: object
+                            properties:
+                              _id:
+                                type: string
+                              name:
+                                type: string
+                              avatar:
+                                type: string
+                          rank:
+                            type: integer
+                          statistic:
+                            type: object
+        400:
+          description: bad input parameter
+        401:
+          description: token expired/invalid
+
+  /banners/{screenId}:
+    get:
+      tags:
+      - Common
+      summary: Get list banners by screen id
+      deprecated: true
+      description: Get list banners by screen id
+      parameters:
+      - $ref: '#/components/parameters/authorization'
+      - in: path
+        name: screenId
+        description: Id of screen
+        required: true
+        schema:
+          type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    banners:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          _id:
+                            type: string
+                          screen: 
+                            type: string
+                          cover:
+                            type: string
+                          action:
+                            type: string
+        400:
+          description: bad input parameter
+        401:
+          description: token expired/invalid
+          
+  /suggested-local-experts:
+    get:
+      tags:
+        - Common
+      summary: Get list local expert users
+      description: Get list local expert users
+      parameters:
+      - $ref: '#/components/parameters/authorization'
+      responses:
+        200:
+          description: List expert users
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    users:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/userBriefWithReview'              
+        400:
+          description: bad input parameter
+        401:
+          description: token expired/invalid
+          
+  /sync-contact:
+    post:
+      tags:
+        - Common
+      summary: Sync user phone contact
+      description: |
+        Sync user phone contact
+        ***
+        ```
+        {
+          phones: [string] // List new phones of contact
+        }
+        ```
+      parameters:
+      - $ref: '#/components/parameters/authorization'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - phones
+              properties:
+                phones:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        200:
+          description: OK
+        400:
+          description: bad input parameter
+        401:
+          description: token expired/invalid
+          
+  /search/all:
+    get:
+      tags:
+        - Common
+      summary: Seach all in app (business, user, review, ...)
+      parameters:
+      - $ref: '#/components/parameters/authorization'
+      - $ref: '#/components/parameters/page'
+      - $ref: '#/components/parameters/latitude'
+      - $ref: '#/components/parameters/longitude'
+      - in: query
+        name: keyword
+        description: Keyword
+        schema:
+          type: string
+      - in: query
+        name: city
+        description: City
+        schema:
+          type: string
+          enum: ["da-nang", "ho-chi-minh"]
+      responses:
+        200:
+          description: List businesss
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    businesses:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/businessSearch'  
+        400:
+          description: bad input parameter
+        401:
+          description: token expired/invalid
+          
+  /search/map:
+    get:
+      tags:
+        - Common
+      summary: Seach businesses on map
+      parameters:
+      - $ref: '#/components/parameters/authorization'
+      - $ref: '#/components/parameters/page'
+      - $ref: '#/components/parameters/latitude'
+      - $ref: '#/components/parameters/longitude'
+      responses:
+        200:
+          description: List businesss
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    businesses:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/businessSearch'
+        400:
+          description: bad input parameter
+        401:
+          description: token expired/invalid
+          
+  /search/business-with-google-place:
+    get:
+      tags:
+        - Common
+      summary: Search nearby businesses, include data on Google Place
+      parameters:
+      - $ref: '#/components/parameters/authorization'
+      - $ref: '#/components/parameters/latitude'
+      - $ref: '#/components/parameters/longitude'
+      - in: query
+        name: city
+        description: City
+        schema:
+          type: string
+          enum: ["da-nang", "ho-chi-minh"]
+      responses:
+        200:
+          description: List businesss
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    businesses:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/businessSearch'              
+        400:
+          description: bad input parameter
+        401:
+          description: token expired/invalid
+  
+  /follow/{user}:
+    post:
+      tags:
+        - Common
+      summary: Follow a user
+      description: |
+        Follow a user
+        ***
+        ```
+        {
+          user: string // Id of user will follow
+        }
+        ```
+      parameters:
+        - $ref: '#/components/parameters/authorization'
+        - in: path
+          name: user
+          description: Id of user will follow
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: OK
+        400:
+          description: bad input parameter
+        401:
+          description: token expired/invalid
+          
+    delete:
+      tags:
+        - Common
+      summary: Unfollow a user
+      description: Unfollow a user
+      parameters:
+      - $ref: '#/components/parameters/authorization'
+      - in: path
+        name: user
+        description: Id of user will unfollow
+        schema:
+          type: string
+        required: true
+      responses:
+        200:
+          description: OK
+        400:
+          description: bad input parameter
+        401:
+          description: token expired/invalid
+          
+  /nearby-reviews:
+    get:
+      tags:
+        - Home
+      summary: Get nearby reviews
+      description:  Get nearby reviews
+      parameters:
+      - $ref: '#/components/parameters/authorization'
+      - $ref: '#/components/parameters/pageToken'
+      - $ref: '#/components/parameters/latitude'
+      - $ref: '#/components/parameters/longitude'
+      - in: query
+        name: sort
+        description: Sort
+        schema:
+          type: string
+          enum: ["trending", "nearby", "newest"]
+      responses:
+        200:
+          description: List reviews
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    reviews:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/review'
+        400:
+          description: bad input parameter
+        401:
+          description: token expired/invalid
+  
+  /following-reviews:
+    get:
+      tags:
+        - Home
+      summary: Get reviews of following users
+      description:  Get reviews of following users
+      parameters:
+      - $ref: '#/components/parameters/authorization'
+      - $ref: '#/components/parameters/pageToken'
+      - $ref: '#/components/parameters/latitude'
+      - $ref: '#/components/parameters/longitude'
+      - in: query
+        name: sort
+        description: Sort
+        schema:
+          type: string
+          enum: ["nearby", "newest"]
+      responses:
+        200:
+          description: List reviews
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    reviews:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/review'              
+        400:
+          description: bad input parameter
+        401:
+          description: token expired/invalid
+  
+  /reviews:
+    post:
+      tags:
+        - Review
+      summary: Create new business's review
+      description: |
+        Create new business's review
+        ***
+        ```
+        {
+          business: string, // Id of business
+          feedback: string, // Content
+          point: number,    // Rating point: 1-5
+          photos: [string]  // Photos
+        }
+        ```
+      parameters:
+      - $ref: '#/components/parameters/authorization'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - business
+                - feedback
+                - point
+                - photos
+              properties:
+                business:
+                  type: string
+                feedback:
+                  type: string
+                point:
+                  type: integer
+                photos:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        200:
+          description: OK
+        400:
+          description: bad input parameter
+        401:
+          description: token expired/invalid
+          
+  /reviews/{reviewId}:
+    get:
+      tags:
+        - Review
+      summary: Get review detail by id
+      description: Get review detail by id
+      parameters:
+      - $ref: '#/components/parameters/authorization'
+      - in: path
+        name: reviewId
+        description: Id of review
+        schema:
+          type: string
+        required: true
+      responses:
+        200:
+          description: Review detail
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  review:
+                    $ref: '#/components/schemas/review'
+        400:
+          description: bad input parameter
+        401:
+          description: token expired/invalid
+          
+    delete:
+      tags:
+        - Review
+      summary: Delete a review
+      description: Delete a review
+      parameters:
+      - $ref: '#/components/parameters/authorization'
+      - in: path
+        name: reviewId
+        description: Id of review
+        schema:
+          type: string
+        required: true
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  review:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+        400:
+          description: bad input parameter
+        401:
+          description: token expired/invalid
+  
+  /reviews/{reviewId}/comments:
+    get:
+      tags:
+        - Review
+      summary: Get list comments of review
+      description: Get list comments of review
+      parameters:
+      - $ref: '#/components/parameters/authorization'
+      - $ref: '#/components/parameters/pageToken'
+      - in: path
+        name: reviewId
+        description: Id of review
+        schema:
+          type: string
+        required: true
+      responses:
+        200:
+          description: List comments
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  comments:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/comment'
+        400:
+          description: bad input parameter
+        401:
+          description: token expired/invalid
+    post:
+      tags:
+        - Review
+      summary: Comment to a review
+      description: |
+        Comment to a review
+        ***
+        ```
+        {
+          content: string,  // Content
+          photos: [string]  // Photos
+        }
+        ```
+      parameters:
+      - $ref: '#/components/parameters/authorization'
+      - in: path
+        name: reviewId
+        description: Id of review
+        schema:
+          type: string
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - content
+                - photo
+              properties:
+                content:
+                  type: string
+                photos:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  comment:
+                    $ref: '#/components/schemas/comment'
+        400:
+          description: bad input parameter
+        401:
+          description: token expired/invalid
+  
+  /reviews/{reviewId}/views:
+    post:
+      tags:
+        - Review
+      summary: Increase view for a review
+      description: |
+        ```
+        checksum = reviewId + userId
+        ```
+      parameters:
+      - $ref: '#/components/parameters/authorization'
+      - in: path
+        name: reviewId
+        description: Id of review
+        schema:
+          type: string
+        required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - checksum
+              properties:
+                checksum:
+                  type: string
+      responses:
+        200:
+          description: OK
+        400:
+          description: bad input parameter
+        401:
+          description: token expired/invalid
+          
+  /comments/{commentId}:
+    delete:
+      tags:
+        - Comment
+      summary: Delete a comment
+      description: Delete a comment
+      parameters:
+      - $ref: '#/components/parameters/authorization'
+      - in: path
+        name: commentId
+        description: Id of comment
+        schema:
+          type: string
+        required: true
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  comment:
+                    type: object
+                    properties:
+                      _id:
+                        type: string
+        400:
+          description: bad input parameter
+        401:
+          description: token expired/invalid
+          
+  /business/{businessId}/reviews:
+    get:
+      tags:
+        - Business
+      summary: Get list reviews of specific business
+      description: Get list reviews of specific business
+      parameters:
+      - $ref: '#/components/parameters/authorization'
+      - $ref: '#/components/parameters/pageToken'
+      - in: path
+        name: businessId
+        description: Id of business
+        schema:
+          type: string
+        required: true
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reviews:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/review'
+        400:
+          description: bad input parameter
+        401:
+          description: token expired/invalid
+          
+  /me:
+    get:
+      tags:
+        - Me
+      summary: Get current user data
+      description: Get current user data
+      parameters:
+      - $ref: '#/components/parameters/authorization'
+      responses:
+        200:
+          description: |
+            {<br>
+              &nbsp;&nbsp;"referral": {<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;"code": "ZODYAPP",<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;"canEdit": true,<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;"shareText": "Tham gia Zody tích điểm, đổi thưởng khi đi ăn uống. Tải app tại: https://zody.vn/dl/share, nhập mã giới thiệu: ZODYAPP khi đăng ký để nhận điểm thưởng.",<br>
+                &nbsp;&nbsp;&nbsp;&nbsp;"downloadURL": "https://zody.vn/dl/share"<br>
+              &nbsp;&nbsp;}<br>
+            }
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  me:
+                    $ref: '#/components/schemas/userMe'
+        400:
+          description: bad input parameter
+        401:
+          description: token expired/invalid
+          
+    put:
+      tags:
+        - Me
+      summary: Update current user data
+      description: |
+        Update current user data
+        ***
+        ```
+        {
+          name: string,       // Name
+          birthday: string,   // Birthday
+          city: string,       // City
+          desc: string        // Description
+        }
+        ```
+      parameters:
+      - $ref: '#/components/parameters/authorization'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - name
+                - birthday
+                - city
+                - desc
+              properties:
+                name:
+                  type: string
+                birthday:
+                  type: string
+                city:
+                  type: string
+                desc:
+                  type: string
+      responses:
+        200:
+          description: OK
+        400:
+          description: bad input parameter
+        401:
+          description: token expired/invalid
+          
+  /me/reviews:
+    get:
+      tags:
+        - Me
+      summary: List reviews of current user
+      description: List reviews of current user
+      parameters:
+      - $ref: '#/components/parameters/authorization'
+      - $ref: '#/components/parameters/pageToken'
+      - in: query
+        name: type
+        schema:
+          type: string
+          enum: ["photo", "detail"]
+        description: Type of display
+      responses:
+        200:
+          description: List reviews
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reviews:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/review'
+        400:
+          description: bad input parameter
+        401:
+          description: token expired/invalid
+  
+  /me/followers:
+    get:
+      tags:
+        - Me
+      summary: List followers of current user
+      description: List followers of current user
+      parameters:
+      - $ref: '#/components/parameters/authorization'
+      - $ref: '#/components/parameters/page'
+      responses:
+        200:
+          description: List followers
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/userBrief'
+        400:
+          description: bad input parameter
+        401:
+          description: token expired/invalid
+
+  /me/followings:
+    get:
+      tags:
+        - Me
+      summary: List followings of current user
+      description: List followings of current user
+      parameters:
+      - $ref: '#/components/parameters/authorization'
+      - $ref: '#/components/parameters/page'
+      responses:
+        200:
+          description: List followings
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/userBrief'
+        400:
+          description: bad input parameter
+        401:
+          description: token expired/invalid
+          
+  /users/{userId}:
+    get:
+      tags:
+        - User
+      summary: Get user by id
+      description: Get user by id
+      parameters:
+      - $ref: '#/components/parameters/authorization'
+      - in: path
+        name: userId
+        description: User id
+        schema:
+          type: string
+        required: true
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    $ref: '#/components/schemas/userProfileView'
+        400:
+          description: bad input parameter
+        401:
+          description: token expired/invalid
+          
+  /users/{userId}/reviews:
+    get:
+      tags:
+        - User
+      summary: Get list reviews of user
+      description: List reviews of user
+      parameters:
+      - $ref: '#/components/parameters/authorization'
+      - $ref: '#/components/parameters/pageToken'
+      - in: path
+        name: userId
+        description: User id
+        schema:
+          type: string
+        required: true
+      - in: query
+        name: type
+        schema:
+          type: string
+          enum: ["photo", "detail"]
+        description: Type of display
+      responses:
+        200:
+          description: List reviews
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reviews:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/review'
+        400:
+          description: bad input parameter
+        401:
+          description: token expired/invalid
+  
+  /users/{userId}/followers:
+    get:
+      tags:
+        - User
+      summary: List followers of user
+      description: List followers of user
+      parameters:
+      - $ref: '#/components/parameters/authorization'
+      - $ref: '#/components/parameters/page'
+      - in: path
+        name: userId
+        description: User id
+        schema:
+          type: string
+        required: true
+      responses:
+        200:
+          description: List followers
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/userBrief'
+        400:
+          description: bad input parameter
+        401:
+          description: token expired/invalid
+
+  /users/{userId}/followings:
+    get:
+      tags:
+        - User
+      summary: List followings of user
+      description: List followings of user
+      parameters:
+      - $ref: '#/components/parameters/authorization'
+      - $ref: '#/components/parameters/page'
+      - in: path
+        name: userId
+        description: User id
+        schema:
+          type: string
+        required: true
+      responses:
+        200:
+          description: List followings
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/userBrief'
+        400:
+          description: bad input parameter
+        401:
+          description: token expired/invalid
+          
+  /tips:
+    post:
+      tags:
+        - Tip
+      summary: Tip coin to specific user/review
+      description: |
+        Tip coin to specific user/review
+        ***
+        ```
+        {
+          type: string,       // user: tip directly to user
+                              // review: tip a review
+          coin: integer,      // Coin will tip
+          review: string,     // Id of review
+          user: string        // Id of user
+        }
+        ```
+      parameters:
+      - $ref: '#/components/parameters/authorization'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - type
+                - coin
+              properties:
+                type:
+                  type: string
+                coin:
+                  type: integer
+                review:
+                  type: string
+                user:
+                  type: string
+      responses:
+        200:
+          description: OK
+        400:
+          description: bad input parameter
+        401:
+          description: token expired/invalid
+          
+  /tips/review/{reviewId}:
+    get:
+      tags:
+        - Tip
+      summary: Get list tips of a review
+      description: Get list tips of a review
+      parameters:
+      - $ref: '#/components/parameters/authorization'
+      - $ref: '#/components/parameters/page'
+      - in: path
+        name: reviewId
+        description: Review id
+        schema:
+          type: string
+        required: true
+      responses:
+        200:
+          description: List tips
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  users:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        user:
+                          $ref: '#/components/schemas/userBrief'
+                        coin:
+                          type: string
+                        createdAt:
+                          type: string
+                          format: date-time
+        400:
+          description: bad input parameter
+        401:
+          description: token expired/invalid
